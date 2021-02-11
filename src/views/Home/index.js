@@ -8,7 +8,7 @@ import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import TaskCard from '../../components/TaskCard'
 
-//API 
+//API
 import api from '../../services/api'
 
 export default function Home(){
@@ -82,13 +82,12 @@ export default function Home(){
                         <ActivityIndicator color={'#ee6b26'} size={50}/>
                     :
                     tasks.map((t) => (
-                        <TaskCard done={false} title={t.title} when={t.when}/>
+                        <TaskCard done={false} title={t.title} when={t.when} type={t.type}/>
                     ))
                 }
             </ScrollView>
 
             <Footer icon={'add'}/>
         </View>
-    )
-    
+    )    
 }
