@@ -18,7 +18,7 @@ export default function Home(){
 
     async function loadTask(){
         setLoad(true)
-        await api.get('/task/filter/all/11:11:11:11:11:11')
+        await api.get(`/task/${filter}/all/11:11:11:11:11:11`)
         .then((response) => {
             setTasks(response.data)
             setLoad(false)
@@ -27,7 +27,7 @@ export default function Home(){
 
     useEffect(() => {
         loadTask()
-    }, [])
+    }, [filter])
 
     return(
         <View style={styles.Container}>
