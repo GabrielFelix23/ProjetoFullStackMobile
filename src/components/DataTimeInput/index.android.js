@@ -9,10 +9,12 @@ import {
 
 import styles from './styles'
 
+import {format} from 'date-fns'
+
 import iconCalendar from '../../assets/calendar.png'
 import iconClock from '../../assets/clock.png'
 
-export default function DateTimeInputAndroid({type}){
+export default function DateTimeInputAndroid({type, save}){
     const [datetime, setDateTime] = useState()
 
     async function selectDateOtTime(){
@@ -23,13 +25,15 @@ export default function DateTimeInputAndroid({type}){
 
             if(action == DatePickerAndroid.dateSetAction)
                 setDateTime(`${day} - ${month} - ${year}`)
+                save(format(new Date(year, month, day), 'yyyy-MM-dd'))
         }else{
-            const { action, hour, minuto} = await TimePickerAndroid.open({
+            const { action, hour, minute} = await TimePickerAndroid.open({
                 is24Hour: true
             })
 
             if(action !== TimePickerAndroid.dismissedAction)
-            setDateTime(`${hour}:${minuto}`)
+            setDateTime(`${hour}:${minute}`)
+            save(format(new Date(2020, 12, 1, hour, minute, 0, 0), 'HH:mm:ss'))
         }
     }
 
