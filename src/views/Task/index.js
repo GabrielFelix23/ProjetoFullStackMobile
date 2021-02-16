@@ -5,7 +5,6 @@ import {
     Image,
     Text,
     TextInput,
-    //quando vir o teclado para o user digitar todo o contpudo vai para cima
     KeyboardAvoidingView,
     TouchableOpacity,
     Switch
@@ -18,6 +17,7 @@ import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 
 import typeIcons from '../../utils/typeIcons'
+import DataTimeInput from '../../components/DataTimeInput' 
 
 export default function Task(){
     const [done, setDone] = useState(false)
@@ -42,6 +42,9 @@ export default function Task(){
 
                 <Text style={styles.label}>Detalhes</Text>
                 <TextInput style={styles.inputArea} maxLength={200} multiline={true} placeholder="Detalhes da atividade..."/>
+
+                <DataTimeInput type={'date'}/>
+                <DataTimeInput type={'hour'}/>
 
                 <View style={styles.inline}>
                     <View style={styles.inputInline}>
