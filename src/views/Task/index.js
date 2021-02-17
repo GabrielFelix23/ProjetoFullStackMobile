@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {
     View,
     ScrollView,
@@ -14,6 +14,7 @@ import {
 import styles from './styles'
 
 import api from '../../services/api'
+import * as Network from 'expo-network'
 
 //COMPONENTES
 import Header from '../../components/Header'
@@ -22,14 +23,15 @@ import Footer from '../../components/Footer'
 import typeIcons from '../../utils/typeIcons'
 import DataTimeInput from '../../components/DataTimeInput' 
 
-export default function Task({navigation}){
+export default function Task({navigation, idTask}){
+    const [id, setId] = useState(false)
     const [done, setDone] = useState(false)
     const [type, setType] = useState()
     const [title, setTitle] = useState()
     const [description, setDescription] = useState()
     const [date, setDate] = useState()
     const [hour, setHour] = useState()
-    const [macaddress, setMacaddress] = useState('11:11:11:11:11:11')
+    const [macaddress, setMacaddress] = useState()
 
     async function New(){
         if(!title){
@@ -44,9 +46,7 @@ export default function Task({navigation}){
         if(!date){
             return Alert.alert("Defina a data para a tarefa!")
         }
-        if(!hour){
-            return Alert.alert("Defina a hora para a tarefa!")
-        }
+       
 
         await api.post('/task', {
             macaddress,
@@ -57,6 +57,19 @@ export default function Task({navigation}){
             navigation.navigate('Home')
         })
     }
+
+    async function getMacAddress(){
+        await Network.getMacAddressAsync().then(mac => {
+            setMacaddress(mac)
+        })
+    }
+
+    useEffect(() => {
+        if(navigation.state.params){
+            setId(navigation.state.params.idTask)
+        }
+        getMacAddress()
+    },[])
 
     return(
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -82,16 +95,17 @@ export default function Task({navigation}){
 
                 <DataTimeInput type={'date'} save={setDate}/>
                 <DataTimeInput type={'hour'} save={setHour}/>
-
-                <View style={styles.inline}>
-                    <View style={styles.inputInline}>
-                        <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761b' : '#ee6b26'}/>
-                        <Text style={styles.SwitchLabel}>Concluído</Text>
+                { id &&
+                    <View style={styles.inline}>
+                        <View style={styles.inputInline}>
+                            <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761b' : '#ee6b26'}/>
+                            <Text style={styles.SwitchLabel}>Concluído</Text>
+                        </View>
+                        <TouchableOpacity>
+                            <Text style={styles.removeLabel}>EXCLUÍR</Text>
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity>
-                        <Text style={styles.removeLabel}>EXCLUÍR</Text>
-                    </TouchableOpacity>
-                </View>
+                }
             </ScrollView>
             <Footer icon={'save'} onPress={New}/>
         </KeyboardAvoidingView>

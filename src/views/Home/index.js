@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
-
+import * as Network from 'expo-network';
 import styles from './styles'
 
 //Components
@@ -16,10 +16,17 @@ export default function Home({navigation}){
     const [tasks, setTasks] = useState([])
     const [load, setLoad] = useState(false)
     const [lateCount, setLateCount] = useState()
+    const [macaddress, setMacaddress] = useState()
+
+    async function getMacAddress(){
+        await Network.getMacAddressAsync().then(mac => {
+            setMacaddress(mac)
+        })
+    }
 
     async function loadTask(){
         setLoad(true)
-        await api.get(`/task/${filter}/all/11:11:11:11:11:11`)
+        await api.get(`/task/filter/${filter}/${macaddress}`)
         .then((response) => {
             setTasks(response.data)
             setLoad(false)
@@ -27,7 +34,7 @@ export default function Home({navigation}){
     }
 
     async function lateVerify(){
-        await api.get(`/task/late/all/11:11:11:11:11:11`)
+        await api.get(`/task/late/all/${macaddress}`)
         .then((response) => {
             setLateCount(response.data.lenght)
         })
@@ -41,9 +48,16 @@ export default function Home({navigation}){
         navigation.navigate('Task')
     }
 
+    function Show(id){
+        navigation.navigate("Task", {idTask: id})
+    }
+
     useEffect(() => {
-        loadTask()
-    }, [filter])
+        getMacAddress().then(() =>{
+            loadTask()
+        })
+        lateVerify()
+    }, [filter, macaddress])
 
     return(
         <View style={styles.Container}>
@@ -99,7 +113,7 @@ export default function Home({navigation}){
                         <ActivityIndicator color={'#ee6b26'} size={50}/>
                     :
                     tasks.map((t) => (
-                        <TaskCard done={false} title={t.title} when={t.when} type={t.type}/>
+                        <TaskCard done={false} title={t.title} when={t.when} type={t.type} onPress={() => Show(t._id)}/>
                     ))
                 }
             </ScrollView>
