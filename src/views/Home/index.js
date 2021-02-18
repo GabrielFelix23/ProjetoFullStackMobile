@@ -34,7 +34,7 @@ export default function Home({navigation}){
     }
 
     async function lateVerify(){
-        await api.get(`/task/late/all/${macaddress}`)
+        await api.get(`/task/filter/late/${macaddress}`)
         .then((response) => {
             setLateCount(response.data.lenght)
         })
@@ -113,7 +113,7 @@ export default function Home({navigation}){
                         <ActivityIndicator color={'#ee6b26'} size={50}/>
                     :
                     tasks.map((t) => (
-                        <TaskCard done={false} title={t.title} when={t.when} type={t.type} onPress={() => Show(t._id)}/>
+                        <TaskCard done={t.done} title={t.title} when={t.when} type={t.type} onPress={() => Show(t._id)}/>
                     ))
                 }
             </ScrollView>

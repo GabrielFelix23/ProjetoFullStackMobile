@@ -35,7 +35,7 @@ export default function Task({navigation}){
     const [macaddress, setMacaddress] = useState()
     const [load, setLoad] = useState(true)
 
-    async function New(){
+    async function SaveTask(){
         if(!title){
             return Alert.alert("Defina o nome da tarefa!")
         }
@@ -49,15 +49,26 @@ export default function Task({navigation}){
             return Alert.alert("Defina a data para a tarefa!")
         }
        
-
-        await api.post('/task', {
-            macaddress,
-            title,
-            description,
-            when: `${date}T${hour}.000`
-        }).then(() => {
-            navigation.navigate('Home')
-        })
+        if(id){
+            await api.put(`/task/${id}`, {
+                macaddress,
+                done,
+                title,
+                description,
+                when: `${date}T${hour}.000`
+            }).then(() => {
+                navigation.navigate('Home')
+            })
+        }else{
+            await api.post('/task', {
+                macaddress,
+                title,
+                description,
+                when: `${date}T${hour}.000`
+            }).then(() => {
+                navigation.navigate('Home')
+            })
+        }
     }
 
     async function LoadTask(){
@@ -128,7 +139,7 @@ export default function Task({navigation}){
                     }
                 </ScrollView>
             }
-            <Footer icon={'save'} onPress={New}/>
+            <Footer icon={'save'} onPress={SaveTask}/>
         </KeyboardAvoidingView>
     )
 }
