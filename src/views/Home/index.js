@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
-import * as Network from 'expo-network';
+import * as Network from 'expo-network'
 import styles from './styles'
 
 //Components
@@ -62,7 +62,7 @@ export default function Home({navigation}){
     return(
         <View style={styles.Container}>
             <Header showNotification={true} showBack={false} pressNotification={notification} 
-            late={lateCount}/>
+            late={lateCount} navigation={navigation}/>
 
             <View style={styles.filter}>
                 <TouchableOpacity onPress={() => setFilter('all')}>
